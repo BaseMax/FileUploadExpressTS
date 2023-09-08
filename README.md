@@ -51,7 +51,7 @@ To upload a file, make a POST request to /upload with a multipart/form-data body
 Example using curl:
 
 ```bash
-curl -X POST -F "file=@path/to/your/file.jpg" http://localhost:3000/upload
+curl -X POST -F "file=@path/to/your/file.jpg" http://localhost:3000/upload (with token HEADER)
 ```
 
 Replace `path/to/your/file.jpg` with the path to the file you want to upload.
