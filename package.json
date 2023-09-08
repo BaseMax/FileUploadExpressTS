@@ -7,13 +7,29 @@
     "start": "npm run build && node build/index.js",
     "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format && npm run lint"
+    }
+  },
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
     "nodemon": "^3.0.1",
+    "prettier": "^3.0.3",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
