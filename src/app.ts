@@ -1,8 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import pino from 'pino-http';
-import { config } from './config';
-import 'dotenv/config';
+import { appConfig } from './config';
 
 const app = express();
 
@@ -12,15 +11,14 @@ app.use(helmet());
 // Pino Logger
 app.use(
   pino({
-    transport:
-      config.env === 'development'
-        ? {
-            target: 'pino-pretty',
-            options: {
-              singleLine: true
-            }
+    transport: appConfig.isDevelopment
+      ? {
+          target: 'pino-pretty',
+          options: {
+            singleLine: true
           }
-        : undefined
+        }
+      : undefined
   })
 );
 
@@ -28,4 +26,4 @@ app.get('/', function (req, res) {
   res.send('hello world');
 });
 
-app.listen(3000);
+app.listen(appConfig.port);
