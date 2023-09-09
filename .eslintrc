@@ -4,7 +4,8 @@
     "plugins": [
       "@typescript-eslint",
       "no-loops",
-      "prettier"
+      "prettier",
+      "jest"
     ],
     "extends": [
       "eslint:recommended",
