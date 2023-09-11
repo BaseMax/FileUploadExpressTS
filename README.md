@@ -64,10 +64,10 @@ To access the uploaded file, make a GET request to the provided URL.
 
 | #   | Route                           | Description                                       | Response Example                                    |
 | --- | ------------------------------- | ------------------------------------------------- | --------------------------------------------------- |
-| 1   | `/api/user/register`            | Register a new user account.                      | `{"message": "User registered successfully"}`      |
-| 2   | `/api/user/login`               | User login with credentials.                      | `{"token": "your-auth-token", "user": {...}}`    |
-| 3   | `/api/user/reset-password`      | Reset user password.                               | `{"message": "Password reset link sent"}`         |
-| 4   | `/api/user/forgot-password`     | Forgot user password.                              | `{"message": "Password reset email sent"}`        |
+| 1   | `/api/auth/register`            | Register a new user account.                      | `{"message": "User registered successfully"}`      |
+| 2   | `/api/auth/login`               | User login with credentials.                      | `{"token": "your-auth-token", "user": {...}}`    |
+| 3   | `/api/auth/reset-password`      | Reset user password.                               | `{"message": "Password reset link sent"}`         |
+| 4   | `/api/auth/forgot-password`     | Forgot user password.                              | `{"message": "Password reset email sent"}`        |
 | 5   | `/api/upload`                   | Upload a file.                                    | `{"message": "File uploaded successfully"}`      |
 | 6   | `/api/create-directory`         | Create a new directory.                           | `{"message": "Directory created successfully"}`  |
 | 7   | `/api/move-file`                | Move a file to a different location.              | `{"message": "File moved successfully"}`          |
@@ -82,7 +82,7 @@ To access the uploaded file, make a GET request to the provided URL.
 | 16  | `/api/rename-file/:id`          | Rename a specific file by ID.                     | `{"message": "File renamed successfully"}`        |
 | 17  | `/api/copy-file/:id`            | Create a copy of a specific file by ID.           | `{"message": "File copied successfully"}`          |
 | 18  | `/api/move-file/:id`            | Move a specific file to a different location.      | `{"message": "File moved successfully"}`           |
-| 19  | `/api/user/logout`              | User logout.                                      | `{"message": "User logged out successfully"}`      |
+| 19  | `/api/auth/logout`              | User logout.                                      | `{"message": "User logged out successfully"}`      |
 | 20  | `/api/user/profile`             | Get user profile information.                     | `{"id": 1, "username": "example", ...}`            |
 | 21  | `/api/user/update-profile`      | Update user profile information.                  | `{"message": "Profile updated successfully"}`      |
 | 22  | `/api/user/change-password`     | Change user password.                             | `{"message": "Password changed successfully"}`     |
