@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  #api:
+   # build:
+   #   context: .
+   #   dockerfile: Dockerfile
+   # container_name: api
+   # ports:
+    #  - 3000:$PORT
+    #env_file:
+     # - .env
+    #depends_on:
+    #  - minio
+  
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: pass@2023
+    command: server --console-address ":9001" /data
+
+volumes:
+  minio_storage: {}
