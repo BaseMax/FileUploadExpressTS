@@ -1,5 +1,5 @@
-import pino from "pino";
-import { appConfig } from "../config/app";
+import pino from 'pino';
+import { appConfig } from '../config/app';
 
 // Warn
 export const logger = pino({
