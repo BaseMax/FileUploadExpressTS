@@ -7,6 +7,11 @@ export class RegisterUserDto {
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(5)
+  username!: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(8)
   password!: string;
 }
