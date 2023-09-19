@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   JsonController,
+  Post,
   Put,
   UseBefore
 } from 'routing-controllers';
@@ -12,6 +13,7 @@ import { GetCurrentUserId } from '../../decorators/get-current-user-id.decorator
 import { AuthCheck } from '../../infrastructure/middlewares/auth.middleware';
 import { UserService } from './user.service';
 import { UpdateUserProfileDto } from './dto/update-profile';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Service()
 @JsonController('/user')
@@ -23,6 +25,15 @@ export class UserController {
   @HttpCode(200)
   getUserProfile(@GetCurrentUserId() userId: number) {
     return this.userService.getUserProfile(+userId);
+  }
+
+  @Post('/change-password')
+  @HttpCode(200)
+  changePassword(
+    @GetCurrentUserId() userId: number,
+    @Body() changePassword: ChangePasswordDto
+  ) {
+    return this.userService.changePassword(+userId, changePassword);
   }
 
   @Put('/update-profile')

@@ -2,12 +2,40 @@ import { Service } from 'typedi';
 import { CreateUserDto } from './dto/createUser.dto';
 import prisma from '../../database/client';
 import { UpdateUserProfileDto } from './dto/update-profile';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { HashService } from '../../infrastructure/services/hash/hash.service';
+import { BadRequestError } from 'routing-controllers';
 
 @Service()
 export class UserService {
+  constructor(private readonly hashService: HashService) {}
   getUserProfile(userId: number) {
     return prisma.profile.findUnique({
       where: { userId }
+    });
+  }
+
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) throw new BadRequestError();
+
+    const matchPassword = this.hashService.compare(
+      changePasswordDto.currentPassword,
+      user.password
+    );
+
+    if (!matchPassword) throw new BadRequestError('old password not valid');
+
+    const hashNewPassword = await this.hashService.make(
+      changePasswordDto.newPassword
+    );
+
+    return prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashNewPassword
+      }
     });
   }
 
@@ -15,7 +43,6 @@ export class UserService {
     return prisma.profile.upsert({
       where: { userId },
       create: {
-        username: updateUserProfileDto.username,
         firstName: updateUserProfileDto.firstName,
         lastName: updateUserProfileDto.lastName,
         phone: updateUserProfileDto.phone,
@@ -26,7 +53,6 @@ export class UserService {
         }
       },
       update: {
-        username: updateUserProfileDto?.username,
         firstName: updateUserProfileDto?.firstName,
         lastName: updateUserProfileDto?.lastName,
         phone: updateUserProfileDto?.phone
@@ -38,6 +64,7 @@ export class UserService {
     return prisma.user.create({
       data: {
         email: createUserDto.email,
+        username: createUserDto.username,
         password: createUserDto.password
       }
     });
