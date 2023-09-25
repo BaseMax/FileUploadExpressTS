@@ -11,20 +11,45 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-
-  profile Profile?
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  username  String      @unique @default("")
+  password  String
+  files     File[]
+  profile   Profile?
+  Directory Directory[]
 }
 
 model Profile {
-  id        Int     @id @default(autoincrement())
-  username  String @unique
+  id        Int    @id @default(autoincrement())
   firstName String
   lastName  String
   phone     String
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
+}
+
+model File {
+  id                Int        @id @default(autoincrement())
+  key               String     
+  name              String
+  size              Float
+  type              String
+  owner             User       @relation(fields: [ownerId], references: [id])
+  ownerId           Int
+  numberOfDownloads Int        @default(0)
+  directoryId       Int?
+  directory         Directory? @relation(fields: [directoryId], references: [id])
+}
+
+model Directory {
+  id          Int         @id @default(autoincrement())
+  name        String
+  File        File[]
+  owner       User        @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  parentDirId Int?
+  parentDir   Directory?  @relation("ChildDirectories", fields: [parentDirId], references: [id])
+  childDirs   Directory[] @relation("ChildDirectories")
 }
