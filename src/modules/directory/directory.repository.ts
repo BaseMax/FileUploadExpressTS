@@ -27,4 +27,23 @@ export class DirectoryRepository {
       // Warn
     }
   }
+
+  findById(id: number, userId: number) {
+    return prisma.directory.findUnique({
+      where: { id, ownerId: userId },
+      include: {
+        parentDir: {
+          include: {
+            parentDir: {
+              include: {
+                parentDir: {
+                  include: { parentDir: { include: { parentDir: true } } }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 }
