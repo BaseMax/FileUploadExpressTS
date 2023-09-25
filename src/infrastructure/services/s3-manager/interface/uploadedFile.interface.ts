@@ -1,6 +1,6 @@
 export interface UploadedFile {
   name: string;
-  path: string;
+  key: string;
   type: string;
   size: number;
 }
