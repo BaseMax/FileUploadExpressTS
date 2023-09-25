@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import prisma from '../../database/client';
-import { CreateFileDto } from './dto/createFile.dto';
+import { CreateFileDto } from './dto/create-file.dto';
+import { UpdateFileDto } from './dto/update-file.dto';
 
 @Service()
 export class FileRepository {
@@ -10,14 +11,28 @@ export class FileRepository {
     });
   }
 
+  incrementNumberOfDownloads(id: number) {
+    return prisma.file.update({
+      where: { id },
+      data: {
+        numberOfDownloads: {
+          increment: 1
+        }
+      }
+    });
+  }
+
   create(userId: number, createFileDto: CreateFileDto) {
     return prisma.file.create({
       data: {
         owner: {
           connect: { id: userId }
         },
+        directory: {
+          connect: { id: createFileDto?.directoryId }
+        },
         name: createFileDto.name,
-        path: createFileDto.path,
+        key: createFileDto.key,
         size: createFileDto.size,
         type: createFileDto.type
       }
@@ -30,7 +45,45 @@ export class FileRepository {
         id,
         ownerId: userId
       },
-      include: { directory: true }
+      include: {
+        directory: { include: { parentDir: { include: { parentDir: true } } } }
+      }
+    });
+  }
+
+  getUserAllFilesSortByDownloads(userId: number) {
+    return prisma.file.findMany({
+      where: {
+        ownerId: userId
+      },
+      include: {
+        directory: {
+          include: {
+            parentDir: {
+              include: {
+                parentDir: {
+                  include: { parentDir: { include: { parentDir: true } } }
+                }
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        numberOfDownloads: 'desc'
+      }
+    });
+  }
+
+  update(id: number, payload: UpdateFileDto) {
+    return prisma.file.update({
+      where: { id },
+      data: {
+        name: payload?.name,
+        directory: {
+          connect: { id: payload?.directoryId }
+        }
+      }
     });
   }
 
@@ -39,7 +92,7 @@ export class FileRepository {
       where: { id: fileId },
       data: {
         name: fileName,
-        path: fileName
+        key: fileName
       }
     });
   }
