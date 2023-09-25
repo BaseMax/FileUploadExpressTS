@@ -4,7 +4,11 @@ import { UploadedFile } from './interface/uploadedFile.interface';
 import { Service } from 'typedi';
 import { File } from './interface/file.interface';
 import { logger } from '../../../utils';
-import { BadRequestError, InternalServerError } from 'routing-controllers';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError
+} from 'routing-controllers';
 import { extension } from 'mime-types';
 
 @Service()
@@ -42,11 +46,20 @@ export class S3ManagerService {
     return `${file.originalname}-${timestamp}.${extension(file.mimetype)}`;
   }
 
-  private async uploadFile(file: File, userId: number): Promise<string> {
+  private async uploadFile(
+    file: File,
+    userId: number,
+    directory?: string
+  ): Promise<string> {
     const timestamp = Date.now();
     const uniqueName = this.generateUniqueName(file, timestamp);
 
-    const fileKey = `${this.baseS3Path}${userId}/${uniqueName}`;
+    let fileKey: string;
+    if (directory) {
+      fileKey = `${this.baseS3Path}${userId}/${directory}/${uniqueName}`;
+    } else {
+      fileKey = `${this.baseS3Path}${userId}/${uniqueName}`;
+    }
 
     await this.client.putObject({
       Bucket: this.bucketName,
@@ -60,26 +73,27 @@ export class S3ManagerService {
 
   async upload(
     files: File | File[],
-    userId: number
+    userId: number,
+    directory?: string
   ): Promise<UploadedFile | UploadedFile[] | undefined> {
     try {
       if (Array.isArray(files)) {
-        const paths = await Promise.all(
+        const keys = await Promise.all(
           files.map(async (file) => {
             return {
-              path: await this.uploadFile(file, userId),
+              key: await this.uploadFile(file, userId, directory),
               size: file.size,
               name: file.originalname,
               type: file.mimetype
             };
           })
         );
-        return paths;
+        return keys;
       }
 
-      const path = await this.uploadFile(files, userId);
+      const key = await this.uploadFile(files, userId);
       return {
-        path,
+        key,
         size: files.size,
         name: files.originalname,
         type: files.mimetype
@@ -121,17 +135,14 @@ export class S3ManagerService {
 
   async checkObjectExists(key: string): Promise<boolean> {
     try {
-      const object = await this.client.headObject({
+      await this.client.headObject({
         Bucket: this.bucketName,
-        Key: key
+        Key: `${this.baseS3Path}${key}`
       });
-
-      if (!object) {
-        return false;
-      }
 
       return true;
     } catch (error) {
+      if ((error as { name: string }).name === 'NotFound') return false;
       logger.error(error);
       throw new InternalServerError('Internal Server Error server');
     }
@@ -144,11 +155,11 @@ export class S3ManagerService {
     try {
       await this.client.copyObject({
         Bucket: this.bucketName,
-        CopySource: key,
-        Key: newKey
+        CopySource: `${this.bucketName}/${this.baseS3Path}${key}`,
+        Key: `${this.baseS3Path}${newKey}`
       });
 
-      return;
+      return true;
     } catch (error) {
       logger.error(error);
       throw new InternalServerError('Internal Server Error server');
@@ -156,9 +167,10 @@ export class S3ManagerService {
   }
 
   async deleteObject(path: string) {
+    const objectExists = await this.checkObjectExists(path);
+    if (!objectExists) throw new NotFoundError('Object Not Found!');
+
     const key = `${this.baseS3Path}${path}`;
-    const objectExists = await this.checkObjectExists(key);
-    if (!objectExists) throw new BadRequestError('Object Not Found!');
 
     try {
       await this.client.deleteObject({
