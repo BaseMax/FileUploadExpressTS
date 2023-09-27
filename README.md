@@ -9,6 +9,36 @@ This is a simple File Upload API built with Express.js and TypeScript. It allows
 - Error handling and validation for uploaded files.
 - TypeScript support for improved code quality.
 
+## Screenshots
+
+#### manage users file with minio(object storage)
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-35-53.png)
+
+#### login user
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-02.png)
+
+#### register new user
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-31.png)
+
+#### upload file
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-41.png)
+
+#### upload from link
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-47.png)
+
+#### create directory
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-59.png)
+
+#### leaderboard
+
+-[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-34-07.png)
+
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
