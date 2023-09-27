@@ -28,6 +28,18 @@ export class DirectoryRepository {
     }
   }
 
+  viewDirectoryStats(id: number) {
+    return prisma.file.count({ where: { directoryId: id } });
+  }
+
+  viewDirectoryContent(id: number) {
+    return prisma.file.findMany({ where: { directoryId: id } });
+  }
+
+  findAll() {
+    return prisma.directory.findMany({ include: { parentDir: true } });
+  }
+
   findById(id: number, userId: number) {
     return prisma.directory.findUnique({
       where: { id, ownerId: userId },

@@ -11,6 +11,10 @@ export class FileRepository {
     });
   }
 
+  getAll() {
+    return prisma.file.findMany();
+  }
+
   incrementNumberOfDownloads(id: number) {
     return prisma.file.update({
       where: { id },
@@ -46,7 +50,38 @@ export class FileRepository {
         ownerId: userId
       },
       include: {
-        directory: { include: { parentDir: { include: { parentDir: true } } } }
+        directory: {
+          include: {
+            parentDir: {
+              include: {
+                parentDir: {
+                  include: { parentDir: { include: { parentDir: true } } }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  findFileById(id: number) {
+    return prisma.file.findUnique({
+      where: {
+        id
+      },
+      include: {
+        directory: {
+          include: {
+            parentDir: {
+              include: {
+                parentDir: {
+                  include: { parentDir: { include: { parentDir: true } } }
+                }
+              }
+            }
+          }
+        }
       }
     });
   }

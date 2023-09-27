@@ -17,12 +17,21 @@ import { GetCurrentUserId } from '../../decorators/get-current-user-id.decorator
 import { AuthCheck } from '../../infrastructure/middlewares/auth.middleware';
 import { UploadFromLinkDto } from './dto/upload-from-file.dto';
 import { TransformFileDto } from './dto/trnsform-file.dto';
+import { RenameFileDto } from './dto/rename-file.dto';
+import { HasRole } from '../../infrastructure/middlewares/hasRole.middleware';
+import { Roles } from '../auth/types/role.enum';
 
 @Service()
 @UseBefore(AuthCheck)
 @JsonController('/file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
+
+  @Get()
+  @UseBefore(HasRole(Roles.Admin))
+  getAll() {
+    return this.fileService.getAllFiles();
+  }
 
   @Get('/leaderboard/')
   leaderboardOfHotLinks(@GetCurrentUserId() userId: number) {
@@ -40,6 +49,12 @@ export class FileController {
     @Param('id') id: number
   ) {
     return this.fileService.numberOfDownloads(+userId, +id);
+  }
+
+  @Get('/admin/stats/:id')
+  @UseBefore(HasRole(Roles.Admin))
+  getFileStats(@Param('id') id: number) {
+    return this.fileService.getFileStats(+id);
   }
 
   @Get('/search')
@@ -73,12 +88,25 @@ export class FileController {
     return this.fileService.moveFile(+userId, +id, payload?.directoryId);
   }
 
+  @Post('/rename/:id')
+  renameFile(
+    @GetCurrentUserId() userId: number,
+    @Param('id') id: number,
+    @Body() body: RenameFileDto
+  ) {
+    return this.fileService.renameFile(+userId, +id, body.newName);
+  }
+
   @Post('/upload-from-link')
   uploadFileFromLink(
     @GetCurrentUserId() userId: number,
     @Body() uploadFromLinkDto: UploadFromLinkDto
   ) {
-    return this.fileService.uploadFromLink(+userId, uploadFromLinkDto.url);
+    return this.fileService.uploadFromLink(
+      +userId,
+      uploadFromLinkDto.url,
+      uploadFromLinkDto.directoryId
+    );
   }
 
   @Post('/upload/:directoryId')
@@ -97,5 +125,11 @@ export class FileController {
     @Param('id') id: number
   ) {
     return this.fileService.removeFile(+userId, id);
+  }
+
+  @Delete('/admin/:id')
+  @UseBefore(HasRole(Roles.Admin))
+  deleteFileByAdmin(@Param('id') id: number) {
+    return this.fileService.removeFileByAdmin(+id);
   }
 }

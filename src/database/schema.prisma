@@ -15,9 +15,15 @@ model User {
   email     String      @unique
   username  String      @unique @default("")
   password  String
+  role      Role        @default(user)
   files     File[]
   profile   Profile?
   Directory Directory[]
+}
+
+enum Role {
+  user
+  admin
 }
 
 model Profile {
@@ -32,7 +38,7 @@ model Profile {
 
 model File {
   id                Int        @id @default(autoincrement())
-  key               String     
+  key               String
   name              String
   size              Float
   type              String

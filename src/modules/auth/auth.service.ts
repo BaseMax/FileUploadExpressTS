@@ -27,7 +27,7 @@ export class AuthService {
     if (!matchPassword)
       throw new BadRequestError('Login information is incorrect');
 
-    const token = this.jwtService.sign({ id: user.id });
+    const token = this.jwtService.sign({ id: user.id, role: user.role });
 
     return {
       token: token,

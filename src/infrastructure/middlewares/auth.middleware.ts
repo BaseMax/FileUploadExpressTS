@@ -6,6 +6,7 @@ import { authConfig } from '../../config';
 
 interface DecodedToken {
   id: number;
+  role: string;
 }
 
 @Service()
@@ -22,7 +23,7 @@ export class AuthCheck implements ExpressMiddlewareInterface {
     try {
       const decodedToken = jwt.verify(token, authConfig.secret) as DecodedToken;
 
-      request.user = { id: decodedToken.id };
+      request.user = { id: decodedToken.id, role: decodedToken.role };
       next();
     } catch (error) {
       return response.status(400).json({ message: 'Invalid token.' });

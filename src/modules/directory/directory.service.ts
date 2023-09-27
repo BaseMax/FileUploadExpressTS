@@ -12,6 +12,19 @@ export class DirectoryService {
     private readonly directoryRepository: DirectoryRepository
   ) {}
 
+  async viewDirectoryStats(id: number) {
+    const count = await this.directoryRepository.viewDirectoryStats(+id);
+    return { files: count };
+  }
+
+  viewDirectoryContent(id: number) {
+    return this.directoryRepository.viewDirectoryContent(+id);
+  }
+
+  findAll() {
+    return this.directoryRepository.findAll();
+  }
+
   async getDirectory(id: number, userId: number) {
     return this.directoryRepository.findById(+id, userId);
   }

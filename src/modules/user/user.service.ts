@@ -5,14 +5,54 @@ import { UpdateUserProfileDto } from './dto/update-profile';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { HashService } from '../../infrastructure/services/hash/hash.service';
 import { BadRequestError } from 'routing-controllers';
+import { Roles } from '../auth/types/role.enum';
 
 @Service()
 export class UserService {
   constructor(private readonly hashService: HashService) {}
+
+  setRole(id: number, role: Roles) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        role
+      }
+    });
+  }
+
+  getUserDownloads(id: number) {
+    return prisma.file.findMany({
+      where: {
+        ownerId: id
+      },
+      orderBy: {
+        numberOfDownloads: 'desc'
+      }
+    });
+  }
+
+  async getUserStats(id: number) {
+    const userFiles = await prisma.file.count({
+      where: { ownerId: id }
+    });
+
+    return { uploads: userFiles };
+  }
+
+  getAllUsers() {
+    return prisma.user.findMany({});
+  }
+
   getUserProfile(userId: number) {
     return prisma.profile.findUnique({
       where: { userId }
     });
+  }
+
+  async getUserDownloadedFiles(userId: number) {
+    const files = await prisma.file.findMany({ where: { ownerId: userId } });
+
+    return files.filter((file) => file.numberOfDownloads >= 1);
   }
 
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {

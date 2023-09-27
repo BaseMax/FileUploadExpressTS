@@ -23,6 +23,16 @@ export class FileService {
     private readonly directoryService: DirectoryService
   ) {}
 
+  async getFileStats(id: number) {
+    const file = await this.fileRepository.findFileById(id);
+
+    return { downloads: file?.numberOfDownloads };
+  }
+
+  getAllFiles() {
+    return this.fileRepository.getAll();
+  }
+
   async moveFile(userId: number, id: number, directoryId?: number) {
     const file = await this.fileRepository.findUserFileById(id, userId);
 
@@ -145,11 +155,26 @@ export class FileService {
     return { downloads: file?.numberOfDownloads };
   }
 
-  async uploadFromLink(userId: number, url: string) {
+  async uploadFromLink(userId: number, url: string, directoryId?: number) {
     const response = await axios.get(url, { responseType: 'stream' });
 
     if (!response || response.status != 200) {
       throw new InternalServerError('can not get file');
+    }
+
+    let directoryPath: any;
+
+    if (directoryId) {
+      const directory = await this.directoryService.getDirectory(
+        directoryId,
+        userId
+      );
+
+      directoryPath = this.directoryService.getDirectoryLocation(
+        directory as DirectoryData
+      );
+    } else {
+      directoryPath = null;
     }
 
     const file: File = {
@@ -238,11 +263,19 @@ export class FileService {
     const file = await this.fileRepository.findUserFileById(fileId, userId);
     if (!file) throw new BadRequestError('File Not Found!');
 
-    const key = `${userId}/${file.key}`;
-    const newNameKey = `${userId}/${newName}`;
+    return this.fileRepository.updateFileName(file.id, newName);
+  }
 
-    await this.s3.copyObject(key, newNameKey);
-    await this.fileRepository.updateFileName(file.id, newName);
+  async removeFileByAdmin(id: number) {
+    const file = await this.fileRepository.findFileById(id);
+
+    if (!file) throw new BadRequestError('File not found!');
+
+    const key = this.getFileLocation(file as FileData);
+
+    await this.s3.deleteObject(key);
+
+    return this.fileRepository.delete(file.id, file.ownerId);
   }
 
   async removeFile(userId: number, id: number) {
