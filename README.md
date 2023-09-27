@@ -13,31 +13,31 @@ This is a simple File Upload API built with Express.js and TypeScript. It allows
 
 #### manage users file with minio(object storage)
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-35-53.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-35-53.png)
 
 #### login user
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-02.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-02.png)
 
 #### register new user
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-31.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-31.png)
 
 #### upload file
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-41.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-41.png)
 
 #### upload from link
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-47.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-47.png)
 
 #### create directory
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-59.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-33-59.png)
 
 #### leaderboard
 
--[](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-34-07.png)
+![](https://github.com/BaseMax/FileUploadExpressTS/blob/main/screenshots/Screenshot%20from%202023-09-27%2022-34-07.png)
 
 ## Prerequisites
 
