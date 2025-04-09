@@ -58,7 +58,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.629.0",
     "@prisma/client": "^5.2.0",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
